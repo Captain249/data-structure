@@ -14,17 +14,18 @@ class SkipList {
 
     // 初始化操作
     public SkipList() {
-        // 初始化 level 层数组
+        // 初始化 level 层数组，（ 从上到下是一个下标从 0 -> 15 的数组 ）
         forward = new Node[MAX_LEVEL];
-        // 这一层要放入 forward 里的 head 节点
         Node currentHead = new Node(-1);
+        // 从底层（ 下标为 15 ）开始向上构建
         for (int i = MAX_LEVEL - 1; i >= 0; i--) {
-            // 下一层的 head 节点
-            Node nextHead = new Node(-1);
-            nextHead.down = currentHead;
-            // 这层的 head 节点放入
+            // 上一层的 head 节点
+            Node upHead = new Node(-1);
+            upHead.down = currentHead;
             forward[i] = currentHead;
-            currentHead = nextHead;
+
+            // 这里当 i = 0 时，没再用到下个 upHead
+            currentHead = upHead;
         }
     }
 
@@ -96,17 +97,14 @@ class SkipList {
     // 看随机数最多能到多少层 每次有50%的概率上升一层
     private int randomLevel() {
         int level = 0;
-
         // 概率 每个节点对于每层来说每次都有50%的插入该层  插入到队列的概率是100%
         double p = 1d;
-
         // 当 level < MAX_LEVEL，且随机数小于设定的晋升概率时，level + 1 概率变为原来的一般
         while (Math.random() < p && level < MAX_LEVEL) {
             // 第一个循环肯定进来 变为1
             level++;
             p = p / 2.0;
         }
-//        System.out.println(level);
         return level;
     }
 
